@@ -93,6 +93,12 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
       // If we came here because of a change in selected text, not because of
       // actual change in text
       if (widget.controller!.text == this._lastTextValue) return;
+      if (checkIfStringIsComplete(
+        widget.controller!.text, this._lastTextValue ?? '')) {
+      this._lastTextValue = widget.controller!.text;
+      return;
+      }
+
 
       this._lastTextValue = widget.controller!.text;
 
@@ -183,6 +189,13 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
         _suggestionIndex = -1;
       }
     });
+  }
+
+   bool checkIfStringIsComplete(String a, String b) {
+    final List<String> list = [a, b];
+    list..sort((a, b) => a.length.compareTo(b.length));
+    final diff = list.last.length - list.first.length;
+    return diff > 1;
   }
 
   Future<void> invalidateSuggestions() async {
